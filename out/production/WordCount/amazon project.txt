@@ -1,0 +1,119 @@
+1.pandas are packages in python that are used to process data files
+2.data frame
+2.methods
+pd.read_csv(file name with path)
+dataframe.head()
+
+//importing the packages pandas
+import pandas as pd
+
+//storing the ata into the data frame table(df) object
+df = pd.read_csv('amazon-orders.csv')
+df.head()
+
+//repacing the NA vaue with the zero
+df = df.fillna(0)
+df.head()
+
+// Series.str.replace()
+ allows us to
+ replace one character or set of characters with another in any column (called a Series in pandas)
+//usage of the series replace function
+the syntax df["Total Charged"].str.replace('$','') to tell Python to replace what’s inside
+ of the first set of ” ($) that’s in the “Total Charged” column with what’s inside of the second set (nothing).
+In other words, we’re telling pandas to replace the character $ with nothing in that column.
+
+//usage of the function .astype()
+df["Total Charged"] = df["Total Charged"].str.replace('$','').astype(float)
+
+df["Tax Charged"] = df["Tax Charged"].str.replace('$','').astype(float)
+df.head()
+
+
+//these are the functions used to print
+//sum of the "total charge" coumn 
+df["Total Charged"].sum()
+//mean of the "total charge" coumn 
+df["Total Charged"].mean()
+
+//meian of the "total charge" coumn
+df["Total Charged"].median()
+
+//max value of the "total charge" coumn
+df["Total Charged"].max()
+
+//min value
+df["Total Charged"].min()
+
+//tax charged coulmn is being eite to obtain ony number vaue out o the tringinout areay avaiabe
+df["Tax Charged"] = df["Tax Charged"].str.replace('$','').astype(float)
+
+
+ picture of how our spending habits have changed over time by doing some analysis that involves those date columns!
+
+// usage of .to_datetime(df[ 'column name ])  function
+used to read a column of data as date time format 
+
+%matplotlib inline
+Note: when you run this code cell, nothing will visibly change, but it will enable matplotlib to display charts in your notebook.
+
+//uage o the unction  df.plot.bar()
+We can make a basic bar graph in a pretty straightforward way using    df.plot.bar(datecolumn, charge column , rotation)
+ df.plot.bar(x='Order Date', y='Total Charged', rot=90)
+
+We can do grouping of the data by basing on column using another built-in pandas function: df.groupby().
+
+The syntax for this is a little bit complex, but we can break what we want to do down into two parts: 
+1. We want to group our data by 'Order Date', so that all the orders that share the same date are counted in a 
+single row (i.e., we want one row for April 1, rather than three).
+ 2. We want to get the sum of the prices paid in 'Total Charged' column for each date and
+ make it the value for 'Total Charged' in the relevant date’s row
+ (i.e., we want the value of 'Total Charged' in the April 1 row to be the sum total of the three orders placed that day).
+
+Since we’re grouping by the order date, we’ll start with df.groupby('Order Date'). 
+The next thing we need to do is take the sum of the 'Total Charged' column in that group and set the make
+ that our new 'Total Charged' column, so we’ll follow the first part with .sum()["Total Charged"].
+
+We want to assign the result of that, which will be a pandas Series, to a new variable. Let’s call it daily_orders.
+
+//daily orders plot 
+here daily_orders denote the variable that denote the series(column) 
+  daily_orders.plot.bar(figsize=(20, 10), color='#61D199')
+
+
+
+##############the total program################
+
+import pandas as pd
+
+df = pd.read_csv('amazon-orders.csv')
+
+df = df.fillna(0)
+
+df["Total Charged"] = df["Total Charged"].str.replace('$','').astype(float)
+
+df.head()
+df["Total Charged"].sum()
+df["Total Charged"].mean()
+
+df["Total Charged"].median()
+df["Total Charged"].max()
+df["Total Charged"].min()
+
+df["Tax Charged"] = df["Tax Charged"].str.replace('$','').astype(float)
+
+(df["Tax Charged"].sum() / df["Total Charged"].sum())*100
+
+df['Order Date'] = pd.to_datetime(df['Order Date'])
+df.head()
+
+%matplotlib inline
+
+#df.plot.bar(x='Order Date', y='Total Charged')
+#df.plot.bar(x='Order Date', y='Total Charged', rot=90, figsize=(20,10))
+
+daily_orders = df.groupby('Order Date').sum()["Total Charged"]
+#daily_orders.head()
+daily_orders.plot.bar(figsize=(20,10))
+
+daily_orders.plot.bar(figsize=(25, 10), color='green')
